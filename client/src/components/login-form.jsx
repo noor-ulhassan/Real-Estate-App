@@ -18,14 +18,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export function LoginForm({ className, ...props }) {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    dispatch(signInStart());
     try {
       const res = await axios.post(
         "http://localhost:8080/api/auth/login",
@@ -39,12 +46,14 @@ export function LoginForm({ className, ...props }) {
       );
       console.log(res.data);
       if (res.data.success) {
+        dispatch(signInSuccess(res.data.user));
         navigate("/");
+      } else {
+        // if API returned 200 but success is false
+        dispatch(signInFailure(res.data.message));
       }
-    } catch (error) {
-      console.log(error.response?.data || error.message);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      dispatch(signInFailure(err.response?.data?.message || err.message));
     }
   };
   return (
@@ -104,6 +113,11 @@ export function LoginForm({ className, ...props }) {
                 <Button type="submit" disabled={loading}>
                   {loading ? "Logging in..." : "Login"}
                 </Button>
+                {error && (
+                  <p className="text-red-500 text-sm text-center mt-2">
+                    {error}
+                  </p>
+                )}
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <a href="/sign-up">Sign up</a>
                 </FieldDescription>
