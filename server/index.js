@@ -10,3 +10,11 @@ const app = express();
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });
+
+// Routes Imports
+
+import authRouter from "./routes/auth.route.js";
+
+// Routes use
+
+app.use("/api/auth", authRouter);
