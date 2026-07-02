@@ -40,7 +40,6 @@ export const signUp = async (req, res) => {
     status: 201,
     success: true,
     newUser,
-    token,
   });
 };
 
@@ -89,6 +88,5 @@ export const login = async (req, res) => {
     status: 200,
     success: true,
     user,
-    token,
   });
 };

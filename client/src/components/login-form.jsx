@@ -17,19 +17,34 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function LoginForm({ className, ...props }) {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", {
-        email: formData.email,
-        password: formData.password,
-      });
+      const res = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
       console.log(res.data);
+      if (res.data.success) {
+        navigate("/");
+      }
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error.response?.data || error.message);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -79,14 +94,16 @@ export function LoginForm({ className, ...props }) {
                   id="password"
                   type="password"
                   required
-                  vlaue={formData.password}
+                  value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
                 />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Logging in..." : "Login"}
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <a href="/sign-up">Sign up</a>
                 </FieldDescription>

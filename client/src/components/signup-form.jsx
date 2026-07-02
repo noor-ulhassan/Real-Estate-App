@@ -15,25 +15,40 @@ import {
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function SignupForm({ ...props }) {
-  const [formData, serFormData] = useState({
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/sign-up", {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      });
-      console.log(res.data);
+      const res = await axios.post(
+        "http://localhost:8080/api/auth/sign-up",
+        {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      if (res.data.success) {
+        console.log(res.data);
+        navigate("/sign-in");
+      }
     } catch (error) {
-      console.log(error);
+      console.log(error.response?.data || error.message);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -55,7 +70,7 @@ export function SignupForm({ ...props }) {
                 placeholder="John Doe"
                 value={formData.username}
                 onChange={(e) =>
-                  serFormData({ ...formData, username: e.target.value })
+                  setFormData({ ...formData, username: e.target.value })
                 }
                 required
               />
@@ -68,7 +83,7 @@ export function SignupForm({ ...props }) {
                 placeholder="m@example.com"
                 value={formData.email}
                 onChange={(e) =>
-                  serFormData({ ...formData, email: e.target.value })
+                  setFormData({ ...formData, email: e.target.value })
                 }
                 required
               />
@@ -80,7 +95,7 @@ export function SignupForm({ ...props }) {
                 type="password"
                 value={formData.password}
                 onChange={(e) =>
-                  serFormData({ ...formData, password: e.target.value })
+                  setFormData({ ...formData, password: e.target.value })
                 }
                 required
               />
@@ -90,7 +105,9 @@ export function SignupForm({ ...props }) {
             </Field>
             <FieldGroup>
               <Field>
-                <Button type="submit">Create Account</Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Creating..." : "Create Account"}
+                </Button>
                 <Button variant="outline" type="button">
                   Sign up with Google
                 </Button>
