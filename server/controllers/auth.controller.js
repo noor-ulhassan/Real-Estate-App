@@ -1,35 +1,94 @@
-import { User } from "../models/user.model";
+import { User } from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 export const signUp = async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
+  const { username, email, password } = req.body;
+
+  const isExists = await User.findOne({
+    email: email,
+  });
+  if (isExists) {
+    return res.status(422).json({
+      message: "User Already Exists with email",
+      success: false,
+    });
   }
 
-  const user = await User.findOne({ email });
-  if (user) {
-    return res.status(400).json({ message: "User already exists" });
-  }
+  const newUser = await User.create({
+    email,
+    password,
+    username,
+  });
 
-  const newUser = await User.create({ name, email, password });
-
-  res.status(201).json({ message: "User created successfully" });
+  const token = jwt.sign(
+    {
+      userId: newUser._id,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "3d",
+    },
+  );
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    maxAge: 3 * 24 * 60 * 60 * 1000,
+  });
+  res.json({
+    message: "User Registered Successfully",
+    status: 201,
+    success: true,
+    newUser,
+    token,
+  });
 };
+
+// Login Controller
+
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
+  if (!email && !password) {
+    return res.status(422).json({
+      message: "All fields are required",
+    });
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
+
   if (!user) {
-    return res.status(400).json({ message: "User not found" });
+    return res.status(401).json({
+      message: "User not found",
+      success: false,
+    });
+  }
+  const isValidPassword = await user.comparePassword(password);
+  if (!isValidPassword) {
+    return res.status(401).json({
+      message: "Invalid Credentials",
+      success: false,
+    });
   }
 
-  const isMatch = await user.comparePassword(password);
-  if (!isMatch) {
-    return res.status(400).json({ message: "Invalid password" });
-  }
+  const payload = {
+    userId: user._id,
+  };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "3d",
+  });
 
-  res.status(200).json({ message: "User logged in successfully" });
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    maxAge: 3 * 24 * 60 * 60 * 1000,
+  });
+
+  res.json({
+    message: "User Logged In Successfully",
+    status: 200,
+    success: true,
+    user,
+    token,
+  });
 };
