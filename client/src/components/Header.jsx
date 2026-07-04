@@ -1,9 +1,24 @@
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { signOut } from "@/redux/user/userSlice";
+import axios from "axios";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const handleLogout = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/auth/logout", {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        dispatch(signOut());
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <header className=" bg-slate-200 shadow-md ">
@@ -29,10 +44,21 @@ export default function Header() {
             <Link to="/about">
               <li className="hover:text-slate-400 hidden sm:inline">About</li>
             </Link>
+
             {currentUser ? (
-              <Link to="/profile">
-                <li className="hover:text-slate-400 hidden sm:inline">Profile</li>
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link to="/profile">
+                  <li className="hover:text-slate-400 hidden sm:inline">
+                    Profile
+                  </li>
+                </Link>
+                <button
+                  className="hover:cursor-pointer text-red-600 transition-all duration-200 ease-in-out"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </div>
             ) : (
               <Link to="/sign-up">
                 <li className="hover:text-slate-400 ">Get Started</li>

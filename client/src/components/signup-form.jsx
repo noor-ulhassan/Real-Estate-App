@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { app } from "../firebase.js";
 import {
   Card,
   CardContent,
@@ -14,11 +15,14 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
+import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { signInSuccess } from "@/redux/user/userSlice";
 export function SignupForm({ ...props }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -49,6 +53,34 @@ export function SignupForm({ ...props }) {
       console.log(error.response?.data || error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Google OAuth Function
+  const handleGoogleClick = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth(app);
+      const result = await signInWithPopup(auth, provider);
+
+      // response to the backend
+
+      const res = await axios.post(
+        "http://localhost:8080/api/auth/google",
+        {
+          name: result.user.displayName,
+          email: result.user.email,
+          photoUrl: result.user.photoURL,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      
+      dispatch(signInSuccess(res.data.user));
+      navigate("/");
+    } catch (error) {
+      console.log(error.message, "Couldn't Sign in with Google");
     }
   };
   return (
@@ -105,10 +137,19 @@ export function SignupForm({ ...props }) {
             </Field>
             <FieldGroup>
               <Field>
-                <Button type="submit" disabled={loading}>
+                <Button
+                  className={"hover:cursor-pointer"}
+                  type="submit"
+                  disabled={loading}
+                >
                   {loading ? "Creating..." : "Create Account"}
                 </Button>
-                <Button variant="outline" type="button">
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleGoogleClick}
+                  className={"hover:cursor-pointer"}
+                >
                   Sign up with Google
                 </Button>
                 <FieldDescription className="px-6 text-center">

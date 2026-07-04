@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema(
       minLength: [6, "Password should contain at-least 6 characters"],
       select: false,
     },
+    avatar: {
+      type: String,
+      default:
+        "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png",
+    },
   },
   {
     timestamps: true,
