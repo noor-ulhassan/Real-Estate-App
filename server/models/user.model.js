@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default:
-        "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB50zAP_Uk13XEU9M2G_gVZ2z7P9mfJIucQZpmLwNwCQ&s=10",
     },
   },
   {

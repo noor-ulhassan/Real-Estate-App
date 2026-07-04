@@ -37,7 +37,7 @@ export default function Header() {
             />
             <FaSearch className="text-slate-600 cursor-pointer" />
           </form>
-          <ul className="flex gap-4 text-slate-700 text-sm font-semibold">
+          <ul className="flex items-center gap-4 text-slate-700 text-sm font-semibold">
             <Link to="/">
               <li className="hidden sm:inline hover:text-slate-400">Home</li>
             </Link>
@@ -46,22 +46,28 @@ export default function Header() {
             </Link>
 
             {currentUser ? (
-              <div className="flex items-center gap-4">
-                <Link to="/profile">
-                  <li className="hover:text-slate-400 hidden sm:inline">
-                    Profile
-                  </li>
-                </Link>
-                <button
-                  className="hover:cursor-pointer text-red-600 transition-all duration-200 ease-in-out"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </div>
+              <>
+                <li className="list-none">
+                  <button
+                    className="cursor-pointer text-red-600 hover:text-red-400 transition-colors duration-200"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </li>
+                <li className="list-none">
+                  <Link to="/profile">
+                    <img
+                      src={currentUser.avatar}
+                      alt="profile"
+                      className="rounded-full h-7 w-7 object-cover cursor-pointer"
+                    />
+                  </Link>
+                </li>
+              </>
             ) : (
               <Link to="/sign-up">
-                <li className="hover:text-slate-400 ">Get Started</li>
+                <li className="hover:text-slate-400">Get Started</li>
               </Link>
             )}
           </ul>
