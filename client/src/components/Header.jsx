@@ -58,9 +58,12 @@ export default function Header() {
                 <li className="list-none">
                   <Link to="/profile">
                     <img
-                      src={currentUser.avatar}
+                      src={currentUser.avatar || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB50zAP_Uk13XEU9M2G_gVZ2z7P9mfJIucQZpmLwNwCQ&s=10"}
                       alt="profile"
                       className="rounded-full h-7 w-7 object-cover cursor-pointer"
+                      onError={(e) => {
+                        e.target.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB50zAP_Uk13XEU9M2G_gVZ2z7P9mfJIucQZpmLwNwCQ&s=10";
+                      }}
                     />
                   </Link>
                 </li>

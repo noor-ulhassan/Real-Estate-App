@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage: storage.default || storage,
-  version: 1,
+  version: 2, // bumped to clear stale cache (avatar field added)
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
