@@ -27,11 +27,13 @@ app.listen(process.env.PORT, () => {
 
 import authRouter from "./routes/auth.route.js";
 import listingRouter from "./routes/listing.route.js";
+import userRouter from "./routes/user.route.js";
 
 // Routes use
 
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
+app.use("/api/user", userRouter);
 
 // Error Middleware
 
