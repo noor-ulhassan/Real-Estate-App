@@ -6,9 +6,12 @@ export default function CreateListingForm({
   handleImageSubmit,
   handleRemoveImage,
   handleChange,
+  handleSubmit,
+  loading,
+  error,
 }) {
   return (
-    <form className="flex flex-col sm:flex-row gap-6">
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-6">
       <div className="flex flex-col gap-4 flex-1">
         <input
           type="text"
@@ -235,10 +238,12 @@ export default function CreateListingForm({
         {/* Submit */}
         <button
           type="submit"
+          disabled={loading || uploading}
           className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80 transition-opacity mt-4"
         >
-          Create Listing
+          {loading ? "Creating..." : "Create Listing"}
         </button>
+        {error && <p className="text-red-700 text-sm">{error}</p>}
       </div>
     </form>
   );

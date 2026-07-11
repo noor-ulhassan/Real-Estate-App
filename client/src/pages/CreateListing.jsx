@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import CreateListingForm from "../components/CreateListingForm";
 export default function CreateListing() {
   const [formData, setFormData] = useState({
@@ -18,7 +20,12 @@ export default function CreateListing() {
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
+  
+  const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const handleImageSubmit = () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -101,6 +108,39 @@ export default function CreateListing() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (formData.imageUrls.length < 1)
+        return setError("You must upload at least one image");
+      if (+formData.regularPrice < +formData.discountedPrice)
+        return setError("Discount price must be lower than regular price");
+      
+      setLoading(true);
+      setError(false);
+      
+      const res = await axios.post(
+        "http://localhost:8080/api/listing/create",
+        {
+          ...formData,
+          userRef: currentUser._id, // Adding the userRef here!
+        },
+        { withCredentials: true }
+      );
+      
+      setLoading(false);
+      if (res.data.success === false) {
+        setError(res.data.message);
+      } else {
+        // Once created successfully, redirect to the new listing or home
+        navigate("/"); 
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || error.message);
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
@@ -115,6 +155,9 @@ export default function CreateListing() {
         handleImageSubmit={handleImageSubmit}
         handleRemoveImage={handleRemoveImage}
         handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        loading={loading}
+        error={error}
       />
     </main>
   );
