@@ -13,7 +13,7 @@ export default function Search() {
     parking: false,
     furnished: false,
     offer: false,
-    sort: "created_at",
+    sort: "createdAt",
     order: "desc",
   });
   const [loading, setLoading] = useState(false);
@@ -226,7 +226,7 @@ export default function Search() {
             <label className="font-semibold">Sort:</label>
             <select
               onChange={handleChange}
-              defaultValue={"createdAt_desc"}
+              value={`${sidebarData.sort}_${sidebarData.order}`}
               id="sort_order"
               className="border rounded-lg p-3 focus:outline-none"
             >

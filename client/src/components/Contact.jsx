@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-
 export default function Contact({ listing }) {
   const [landlord, setLandlord] = useState(null);
   const [message, setMessage] = useState("");
@@ -46,12 +44,12 @@ export default function Contact({ listing }) {
             className="w-full border p-3 rounded-lg mt-2 focus:outline-none"
           ></textarea>
 
-          <Link
-            to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}
+          <a
+            href={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}
             className="bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95 mt-2"
           >
             Send Message
-          </Link>
+          </a>
         </div>
       )}
     </>

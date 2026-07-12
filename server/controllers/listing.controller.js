@@ -72,22 +72,28 @@ export const searchListings = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 9;
     const startIndex = parseInt(req.query.startIndex) || 0;
 
-    // Offer filter — if not provided or "false", search all listings
+    // Offer filter
     let offer = req.query.offer;
     if (offer === undefined || offer === "false") {
       offer = { $in: [false, true] };
+    } else {
+      offer = true;
     }
 
     // Furnished filter
     let furnished = req.query.furnished;
     if (furnished === undefined || furnished === "false") {
       furnished = { $in: [false, true] };
+    } else {
+      furnished = true;
     }
 
     // Parking filter
     let parking = req.query.parking;
     if (parking === undefined || parking === "false") {
       parking = { $in: [false, true] };
+    } else {
+      parking = true;
     }
 
     // Type filter — if "all", search both rent and sell
