@@ -4,8 +4,7 @@ import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-// The route will be /api/user/listings/:id
 router.get("/listings/:id", verifyToken, getUserListings);
-router.get("/:id", verifyToken, getUser);
+router.get("/:id", getUser); // Public — needed for Contact Landlord feature
 
 export default router;

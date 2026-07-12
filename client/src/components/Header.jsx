@@ -1,12 +1,33 @@
 import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "@/redux/user/userSlice";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Sync search box value from URL when navigating to /search directly
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams();
+    urlParams.set("searchTerm", searchTerm);
+    navigate(`/search?${urlParams.toString()}`);
+  };
+
   const handleLogout = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/auth/logout", {
@@ -19,6 +40,7 @@ export default function Header() {
       console.log(error);
     }
   };
+
   return (
     <>
       <header className=" bg-slate-200 shadow-md ">
@@ -29,13 +51,20 @@ export default function Header() {
               <span className="text-slate-700">Estate</span>
             </h1>
           </Link>
-          <form className="bg-slate-100 rounded-lg flex items-center p-2">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-slate-100 rounded-lg flex items-center p-2"
+          >
             <input
               type="text"
               placeholder="Search..."
               className="bg-transparent focus:outline-none w-24 sm:w-64"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <FaSearch className="text-slate-600 cursor-pointer" />
+            <button type="submit">
+              <FaSearch className="text-slate-600 cursor-pointer" />
+            </button>
           </form>
           <ul className="flex items-center gap-4 text-slate-700 text-sm font-semibold">
             <Link to="/">
@@ -79,3 +108,4 @@ export default function Header() {
     </>
   );
 }
+
