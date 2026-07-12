@@ -1,4 +1,5 @@
 import { Listing } from "../models/listing.model.js";
+import { User } from "../models/user.model.js";
 
 export const getUserListings = async (req, res, next) => {
   // Check if the user is requesting their OWN listings
@@ -15,5 +16,19 @@ export const getUserListings = async (req, res, next) => {
       success: false,
       message: "You can only view your own listings!",
     });
+  }
+};
+
+export const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found!" });
+    }
+
+    const { password: pass, ...rest } = user._doc;
+    res.status(200).json({ success: true, user: rest });
+  } catch (error) {
+    next(error);
   }
 };
