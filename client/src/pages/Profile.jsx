@@ -36,7 +36,7 @@ export default function Profile() {
       setUpdateSuccess(false);
 
       const res = await axios.put(
-        `http://localhost:8080/api/user/update/${currentUser._id}`,
+        `/api/user/update/${currentUser._id}`,
         formData,
         { withCredentials: true }
       );
@@ -60,7 +60,7 @@ export default function Profile() {
     try {
       dispatch(deleteUserStart());
       const res = await axios.delete(
-        `http://localhost:8080/api/user/delete/${currentUser._id}`,
+        `/api/user/delete/${currentUser._id}`,
         { withCredentials: true }
       );
 
@@ -78,7 +78,7 @@ export default function Profile() {
 
   const handleSignOut = async () => {
     try {
-      await axios.get("http://localhost:8080/api/auth/logout", {
+      await axios.get("/api/auth/logout", {
         withCredentials: true,
       });
       dispatch(signOut());
@@ -92,7 +92,7 @@ export default function Profile() {
     try {
       setShowListingsError(false);
       const res = await axios.get(
-        `http://localhost:8080/api/user/listings/${currentUser._id}`,
+        `/api/user/listings/${currentUser._id}`,
         { withCredentials: true }
       );
 
@@ -111,7 +111,7 @@ export default function Profile() {
   const handleListingDelete = async (listingId) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8080/api/listing/delete/${listingId}`,
+        `/api/listing/delete/${listingId}`,
         { withCredentials: true }
       );
       if (res.data.success === false) {

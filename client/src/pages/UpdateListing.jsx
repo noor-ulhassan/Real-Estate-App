@@ -33,7 +33,7 @@ export default function UpdateListing() {
     const fetchListing = async () => {
       const listingId = params.listingId;
       const res = await axios.get(
-        `http://localhost:8080/api/listing/get/${listingId}`,
+        `/api/listing/get/${listingId}`,
       );
       if (res.data.success === false) {
         console.log(res.data.message);
@@ -137,7 +137,7 @@ export default function UpdateListing() {
       setError(false);
 
       const res = await axios.post(
-        `http://localhost:8080/api/listing/update/${params.listingId}`,
+        `/api/listing/update/${params.listingId}`,
         {
           ...formData,
           userRef: currentUser._id,

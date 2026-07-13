@@ -28,7 +28,7 @@ export default function Listing() {
       try {
         setLoading(true);
         const res = await axios.get(
-          `http://localhost:8080/api/listing/get/${params.listingId}`
+          `/api/listing/get/${params.listingId}`
         );
         if (res.data.success === false) {
           setError(true);

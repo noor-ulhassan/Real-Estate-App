@@ -120,7 +120,7 @@ export default function CreateListing() {
       setError(false);
       
       const res = await axios.post(
-        "http://localhost:8080/api/listing/create",
+        "/api/listing/create",
         {
           ...formData,
           userRef: currentUser._id, // Adding the userRef here!

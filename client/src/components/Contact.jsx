@@ -8,7 +8,7 @@ export default function Contact({ listing }) {
     const fetchLandlord = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/user/${listing.userRef}`,
+          `/api/user/${listing.userRef}`,
           { withCredentials: true }
         );
         if (res.data.success) {

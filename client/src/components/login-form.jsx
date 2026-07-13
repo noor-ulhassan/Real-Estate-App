@@ -38,7 +38,7 @@ export function LoginForm({ className, ...props }) {
     dispatch(signInStart());
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/auth/login",
+        "/api/auth/login",
         {
           email: formData.email,
           password: formData.password,
@@ -67,7 +67,7 @@ export function LoginForm({ className, ...props }) {
       const auth = getAuth(app);
       const result = await signInWithPopup(auth, provider);
       const res = await axios.post(
-        "http://localhost:8080/api/auth/google",
+        "/api/auth/google",
         {
           name: result.user.displayName,
           email: result.user.email,

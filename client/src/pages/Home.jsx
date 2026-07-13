@@ -17,7 +17,7 @@ export default function Home() {
     const fetchOfferListings = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8080/api/listing/search?offer=true&limit=4"
+          "/api/listing/search?offer=true&limit=4"
         );
         setOfferListings(res.data.listings);
         fetchRentListings();
@@ -28,7 +28,7 @@ export default function Home() {
     const fetchRentListings = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8080/api/listing/search?type=rent&limit=4"
+          "/api/listing/search?type=rent&limit=4"
         );
         setRentListings(res.data.listings);
         fetchSaleListings();
@@ -40,7 +40,7 @@ export default function Home() {
     const fetchSaleListings = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8080/api/listing/search?type=sell&limit=4"
+          "/api/listing/search?type=sell&limit=4"
         );
         setSaleListings(res.data.listings);
       } catch (error) {

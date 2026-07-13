@@ -35,7 +35,7 @@ export function SignupForm({ ...props }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/auth/sign-up",
+        "/api/auth/sign-up",
         {
           username: formData.username,
           email: formData.email,
@@ -66,7 +66,7 @@ export function SignupForm({ ...props }) {
       // response to the backend
 
       const res = await axios.post(
-        "http://localhost:8080/api/auth/google",
+        "/api/auth/google",
         {
           name: result.user.displayName,
           email: result.user.email,

@@ -55,7 +55,7 @@ export default function Search() {
       setLoading(true);
       setShowMore(false);
       const res = await axios.get(
-        `http://localhost:8080/api/listing/search?${urlParams.toString()}`
+        `/api/listing/search?${urlParams.toString()}`
       );
       if (res.data.listings.length > 8) {
         setShowMore(true);
@@ -123,7 +123,7 @@ export default function Search() {
     const urlParams = new URLSearchParams(location.search);
     urlParams.set("startIndex", startIndex);
     const res = await axios.get(
-      `http://localhost:8080/api/listing/search?${urlParams.toString()}`
+      `/api/listing/search?${urlParams.toString()}`
     );
     if (res.data.listings.length < 9) {
       setShowMore(false);
