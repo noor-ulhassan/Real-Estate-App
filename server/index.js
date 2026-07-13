@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./database/db.js";
 import path from "path";
 
-dotenv.config({ path: "./server/.env" });
+dotenv.config({ path: process.cwd().endsWith("server") ? "./.env" : "./server/.env" });
 connectDB();
 
 const app = express();
@@ -37,11 +37,6 @@ import userRouter from "./routes/user.route.js";
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
 app.use("/api/user", userRouter);
-
-app.use(express.static(path.join(__dirname, "/client/dist")));
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
-});
 
 // Error Middleware
 
